@@ -1,0 +1,26 @@
+batch_size: 50
+nb_samp: 59049 #number of sample in trainset batch configuration
+base_dir: /DB
+
+#optimizer
+dev_scp: /DB/VoxCeleb1/feature/waveform/dev_wav_pe.scp
+eval_scp: /DB/VoxCeleb1/feature/waveform/eval_wav_pe.scp
+save_dir: /exp/model/networks/
+name: reproduce_RawNet
+trials: /DB/VoxCeleb1/voxceleb1_test.txt
+val_trials: /DB/VoxCeleb1/voxceleb1_val.txt
+save_best_only: 0
+
+gru_embeddings: /exp/data/
+
+model:
+  nb_s_conv_filt: 128
+  initializer: he_normal
+  wd: 0.0001
+  nb_conv_filt: [[128, 128], [256, 256], [256, 256], 256]
+  nb_dense_node: [128]
+  c_alpha: 0.5
+  nb_gru_node: [1024]
+  req_drop: 0.3
+  
+
