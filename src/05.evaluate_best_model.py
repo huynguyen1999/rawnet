@@ -109,19 +109,3 @@ if __name__ == "__main__":
     eer = evaluate_model(eval_lines, model_pred, parser["base_dir"], trials)
 
     print("EER: %f" % eer)
-
-#     dev_dic_embeddings = compose_spkFeat_dic(lines = dev_lines,
-#         model = model_pred,
-#         f_desc_dic = {},
-#         base_dir = parser['base_dir'])
-
-#     print('Extracting Embeddings from GRU model: eval set')
-#     eval_dic_embeddings = compose_spkFeat_dic(lines = eval_lines,
-#         model = model_pred,
-#         f_desc_dic = {},
-#         base_dir = parser['base_dir'])
-
-#     f_embeddings = open(parser['gru_embeddings'] + 'speaker_embeddings_RawNet', 'wb')
-#     pk.dump({'dev_dic_embeddings': dev_dic_embeddings, 'eval_dic_embeddings': eval_dic_embeddings},
-#         f_embeddings,
-#         protocol = pk.HIGHEST_PROTOCOL)

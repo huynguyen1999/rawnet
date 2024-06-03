@@ -43,61 +43,64 @@ def join_scp(f_dir, nb_proc):
     f_scp_pe.close()
 
 
-DB_dir = (
-    "./DB/VoxCeleb1/dev_wav/"  # directory where downloaded VoxCeleb1 dataset exists
-)
+DB_DIRECTORY = {
+    "dev": "./DB/VoxCeleb1/dev_wav/",
+    "eval": "./DB/VoxCeleb1/eval_wav/",
+}
 scp_dir = (
     "./DB/VoxCeleb1/feature/waveform/"  # directory to store processed raw waveforms
 )
-dataset = "dev"  # execute this script with either 'dev' or 'eval'
+datasets = ["dev", "eval"]  # execute this script with either 'dev' or 'eval'
 
 if __name__ == "__main__":
     nb_proc = 12
-    if not os.path.exists(scp_dir):
-        os.makedirs(scp_dir)
+    for dataset in datasets:
+        DB_dir = DB_DIRECTORY[dataset]
+        if not os.path.exists(scp_dir):
+            os.makedirs(scp_dir)
 
-    list_f_dir = []
-    for r, ds, fs in os.walk(DB_dir):
-        for f in fs:
-            fn = "/".join([r, f]).replace("\\", "/")
-            key = "/".join(fn.split("/")[-2:])
+        list_f_dir = []
+        for r, ds, fs in os.walk(DB_dir):
+            for f in fs:
+                fn = "/".join([r, f]).replace("\\", "/")
+                key = "/".join(fn.split("/")[-2:])
 
-            if dataset == "dev":
-                if key[0] != "E":
-                    list_f_dir.append("%s %s\n" % (key, fn))
+                if dataset == "dev":
+                    if key[0] != "E":
+                        list_f_dir.append("%s %s\n" % (key, fn))
 
-            elif dataset == "eval":
-                if key[0] == "E":
-                    list_f_dir.append("%s %s\n" % (key, fn))
+                elif dataset == "eval":
+                    if key[0] == "E":
+                        list_f_dir.append("%s %s\n" % (key, fn))
+                else:
+                    raise ValueError(
+                        'sub-dataset not known!! use either "dev" or "eval" for "dataset".'
+                    )
+
+        print("=" * 5 + "done" + "=" * 5)
+        print(len(list_f_dir))
+
+        list_proc = []
+        nb_utt_per_proc = int(len(list_f_dir) / nb_proc)
+        for i in range(nb_proc):
+            if i == nb_proc - 1:
+                lines = list_f_dir[i * nb_utt_per_proc :]
             else:
-                raise ValueError(
-                    'sub-dataset not known!! use either "dev" or "eval" for "dataset".'
+                lines = list_f_dir[i * nb_utt_per_proc : (i + 1) * nb_utt_per_proc]
+
+            print(len(lines))
+            list_proc.append(
+                Process(
+                    target=extract_waveforms,
+                    args=(lines, scp_dir + "%s_wav_%d" % (dataset, i)),
                 )
-
-    print("=" * 5 + "done" + "=" * 5)
-    print(len(list_f_dir))
-
-    list_proc = []
-    nb_utt_per_proc = int(len(list_f_dir) / nb_proc)
-    for i in range(nb_proc):
-        if i == nb_proc - 1:
-            lines = list_f_dir[i * nb_utt_per_proc :]
-        else:
-            lines = list_f_dir[i * nb_utt_per_proc : (i + 1) * nb_utt_per_proc]
-
-        print(len(lines))
-        list_proc.append(
-            Process(
-                target=extract_waveforms,
-                args=(lines, scp_dir + "%s_wav_%d" % (dataset, i)),
             )
-        )
-        print("%d" % i)
+            print("%d" % i)
 
-    for i in range(nb_proc):
-        list_proc[i].start()
-        print("start %d" % i)
-    for i in range(nb_proc):
-        list_proc[i].join()
+        for i in range(nb_proc):
+            list_proc[i].start()
+            print("start %d" % i)
+        for i in range(nb_proc):
+            list_proc[i].join()
 
-    join_scp(f_dir=scp_dir + "%s_wav" % dataset, nb_proc=nb_proc)
+        join_scp(f_dir=scp_dir + "%s_wav" % dataset, nb_proc=nb_proc)

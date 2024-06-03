@@ -85,9 +85,6 @@ def download_file(url, save_path):
             file.write(chunk)
             downloaded_size += len(chunk)
             progress_bar.update(len(chunk))
-            progress_bar.set_description(
-                f"{downloaded_size/1024/1024:.2f}MB/{total_size/1024/1024:.2f}MB"
-            )
 
     progress_bar.close()
 
@@ -100,6 +97,9 @@ def download_file(url, save_path):
 def concatenate_files(urls, save_path):
     logging.info(f"Concatenating files to {DOWNLOADED_DIRECTORY}")
     concatenated_file_path = os.path.join(DOWNLOADED_DIRECTORY, "vox1_dev_wav.zip")
+    if os.path.exists(concatenated_file_path):
+        print(f"Dataset dev already concatenated!")
+        return
     with open(concatenated_file_path, "wb") as wfd:
         for url in urls:
             filename = url.split("/")[-1]
