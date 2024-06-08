@@ -18,20 +18,20 @@
 ## Cách chạy mã nguồn
 1. Giải nén source code thành thư mục RawNet
 2. Chạy image nvidia cho tương xứng với môi trường huấn luyện mô hình của tác giả bài báo
-- `cd RawNet && docker run --gpus all -it --rm -v ./:/code -v ./DB:/DB -v ./:/exp nvcr.io/nvidia/tensorflow:18.05-py3`
+`cd RawNet && docker run --gpus all -it --rm -v ./:/code -v ./DB:/DB -v ./:/exp nvcr.io/nvidia/tensorflow:18.05-py3`
 3. Trong terminal của container, thực hiện các bước sau:
 - Đi vào thưc mục chứa source code: 
-cd /code
+`cd /code`
 - Tải các packages: 
-pip install -r requirements.txt
+`pip install -r requirements.txt`
 - Thực hiện tải dataset và bộ trọng số tốt nhất của tác giả:
-python ./src/01.download_dataset.py
+`python ./src/01.download_dataset.py`
 - Tiền xử lý những đoạn âm thanh của người nói: 
-python ./src/02.pre_process_waveform.py
+`python ./src/02.pre_process_waveform.py`
 - Thực hiện huấn luyện mô hình theo thông số bên trên: 
-python ./src/03.trn_RawNet.py
+`python ./src/03.trn_RawNet.py`
 - Để đánh giá mô hình tốt nhất trên tập validation vừa được huấn luyện:
-python ./src/04.evaluate_model.py --weights=/code/model/networks/RawNet_pre_train_reproduce_RawNet/models_RawNet/best_model_on_validation.h5
+`python ./src/04.evaluate_model.py --weights=/code/model/networks/RawNet_pre_train_reproduce_RawNet/models_RawNet/best_model_on_validation.h5`
 - Để đánh giá mô hình của tác giả:
-python ./src/04.evaluate_model.py --weights=/code/model/RawNet_weights.h5
+`python ./src/04.evaluate_model.py --weights=/code/model/RawNet_weights.h5`
 
