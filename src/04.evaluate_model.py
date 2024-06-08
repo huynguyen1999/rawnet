@@ -11,6 +11,7 @@ from sklearn.metrics import roc_curve
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
 from model_RawNet import get_model
+import argparse
 
 
 def cos_sim(a, b):
@@ -83,6 +84,14 @@ def make_spkdic(lines):
 
 # Example usage
 if __name__ == "__main__":
+    args_parser = argparse.ArgumentParser(
+        description="Speaker Feature Extraction and Evaluation"
+    )
+    args_parser.add_argument(
+        "--weights", required=True, help="Path to the saved model weights"
+    )
+    args = args_parser.parse_args()
+
     _abspath = os.path.abspath(__file__)
     dir_yaml = os.path.splitext(_abspath)[0] + ".yaml"
     with open(dir_yaml, "r") as f_yaml:
@@ -101,7 +110,7 @@ if __name__ == "__main__":
         inputs=model.get_layer("input_RawNet").input,
         outputs=model.get_layer("code_RawNet").output,
     )
-    load_model_weights(model, parser["save_dir"] + "RawNet_weights.h5")
+    load_model_weights(model, args.weights)
 
     # Evaluate the model
     eval_lines = open(parser["eval_scp"], "r").readlines()

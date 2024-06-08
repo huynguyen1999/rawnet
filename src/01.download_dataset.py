@@ -23,15 +23,18 @@ NO_AUTH_URLS = {
     ],
 }
 
-DOWNLOADED_DIRECTORY = "./DB/VoxCeleb1"
-UNZIPPED_DIRECTORY = "./DB/VoxCeleb1/wav"
+DOWNLOADED_DIRECTORY = "/DB/VoxCeleb1"
+UNZIPPED_DIRECTORY = "/DB/VoxCeleb1/wav"
 
 STRUCTURED_DIRECTORY = {
-    "dev": "./DB/VoxCeleb1/dev_wav",
-    "test": "./DB/VoxCeleb1/eval_wav",
+    "dev": "/DB/VoxCeleb1/dev_wav",
+    "test": "/DB/VoxCeleb1/eval_wav",
 }
 
-META_FILE_PATH = "./DB/vox1_meta.csv"
+META_FILE_PATH = "/DB/vox1_meta.csv"
+
+BEST_RAWNET_MODEL_URL = "https://github.com/Jungjee/RawNet/raw/master/python/RawNet1/Keras/data/RawNet_weights.h5"
+BEST_RAWNET_MODEL_SAVE_PATH = "/exp/model/RawNet_weights.h5"
 
 
 def format_number(num):
@@ -63,10 +66,10 @@ def format_dataset_structure(metadata, dataset_type):
                     new_filepath = os.path.join(new_directory, new_filename)
                     shutil.move(old_filepath, new_filepath)
 
-    # for voxceleb_id in os.listdir(base_directory):
-    #     old_directory = os.path.join(base_directory, voxceleb_id)
-    #     if os.path.isdir(old_directory):
-    #         shutil.rmtree(old_directory)
+    for voxceleb_id in os.listdir(base_directory):
+        old_directory = os.path.join(base_directory, voxceleb_id)
+        if os.path.isdir(old_directory):
+            shutil.rmtree(old_directory)
 
 
 def download_file(url, save_path):
@@ -147,3 +150,6 @@ if __name__ == "__main__":
         unzip_dataset(dataset_type)
         format_dataset_structure(metadata, dataset_type)
     logging.info("Completed dataset processing")
+    logging.info("Start download best RawNet model")
+    download_file(BEST_RAWNET_MODEL_URL, BEST_RAWNET_MODEL_SAVE_PATH)
+    logging.info("Completed best RawNet model")

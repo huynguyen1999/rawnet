@@ -44,11 +44,11 @@ def join_scp(f_dir, nb_proc):
 
 
 DB_DIRECTORY = {
-    "dev": "./DB/VoxCeleb1/dev_wav/",
-    "eval": "./DB/VoxCeleb1/eval_wav/",
+    "dev": "/DB/VoxCeleb1/dev_wav/",
+    "eval": "/DB/VoxCeleb1/eval_wav/",
 }
 scp_dir = (
-    "./DB/VoxCeleb1/feature/waveform/"  # directory to store processed raw waveforms
+    "/DB/VoxCeleb1/feature/waveform/"  # directory to store processed raw waveforms
 )
 datasets = ["dev", "eval"]  # execute this script with either 'dev' or 'eval'
 
